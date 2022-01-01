@@ -96,8 +96,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f39a4cca1f452a746b62fce99c7a1aaa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 0}
-  offset: {x: 0, y: 3.26, z: 3.13}
+  player: {fileID: 6515502050886846916, guid: bdf1274417fe501438aead3ff350ef88, type: 3}
+  offset: {x: 0, y: 3.98, z: -9.09}
   slerpValue: 2
   lerpValue: 5
   distanceModifier: 6

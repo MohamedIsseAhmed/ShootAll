@@ -3,18 +3,30 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-
+using UnityEngine.SceneManagement;
 public class GameOver : MonoBehaviour
 {
-    [SerializeField] TextMeshProUGUI gameOverText;
+    [SerializeField] GameObject gameOver;
+    [SerializeField] TextMeshProUGUI dimonCount;
+
+    [SerializeField] GameObject fail;
+   
     void Awake()
     {
         FinishPoint.OnFinsihPointEvent += FinishPoint_OnFinsihPointEvent;
+        PlayerMovemnt.OnPlayerDestroyedEvent += PlayerMovemnt_OnPlayerDestroyedEvent;
+    }
+
+    private void PlayerMovemnt_OnPlayerDestroyedEvent()
+    {
+        fail.SetActive(true);
+        dimonCount.text = "Dimonds " + FindObjectOfType<ScoreManager>().DimondCount;
     }
 
     private void FinishPoint_OnFinsihPointEvent()
     {
-       gameOverText.gameObject.SetActive(true);
+        gameOver.SetActive(true);
+        dimonCount.text =" Dimonds " +FindObjectOfType<ScoreManager>().DimondCount.ToString();
     }
 
     // Update is called once per frame
@@ -22,5 +34,10 @@ public class GameOver : MonoBehaviour
     {
         
     }
-
+    private void OnDisable()
+    {
+        FinishPoint.OnFinsihPointEvent -= FinishPoint_OnFinsihPointEvent;
+        PlayerMovemnt.OnPlayerDestroyedEvent -= PlayerMovemnt_OnPlayerDestroyedEvent;
+    }
+ 
 }

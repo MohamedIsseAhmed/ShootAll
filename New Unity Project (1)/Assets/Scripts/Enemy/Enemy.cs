@@ -31,4 +31,17 @@ public class Enemy : MonoBehaviour,IDamagable
             print("Destry Enemy");
         }
     }
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+           
+            IDamagable player=other.GetComponent<IDamagable>();
+            if(player != null)
+            {
+                player.TakeDame(10);
+            }
+        }
+    }
+  
 }

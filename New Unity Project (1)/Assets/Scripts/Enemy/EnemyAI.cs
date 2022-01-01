@@ -79,7 +79,7 @@ public class EnemyAI : MonoBehaviour
         {
             if(hit.collider != null)
             {
-                Debug.Log(hit.collider.name);
+               
                 hit.collider.GetComponent<Friend>().GoToEnemy(this);
 
             }
@@ -103,5 +103,5 @@ public class EnemyAI : MonoBehaviour
         }
       
     }
-
+ 
 }

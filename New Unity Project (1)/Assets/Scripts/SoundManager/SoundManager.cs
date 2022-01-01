@@ -10,6 +10,15 @@ public class SoundManager : MonoBehaviour
     {
         Instance = this;
         audioSource = GetComponent<AudioSource>();
+
+        if (FindObjectsOfType<SoundManager>().Length > 1)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            DontDestroyOnLoad(gameObject);
+        }
     }
 
     public void PlaySound(AudioClip audioClip)

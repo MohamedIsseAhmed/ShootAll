@@ -39,13 +39,15 @@ public class InteractingWithFriends : MonoBehaviour
            
          
            
-            freindPrefab.gameObject.tag = "Friend";
 
-            Instantiate(freindPrefab,transform.position,transform.rotation);
-            freindPrefab.SetActive(true);
+            GameObject newFriend= Instantiate(freindPrefab,new Vector3(transform.position.x,-0.10f,transform.position.z),transform.rotation) as GameObject;
+           
+           newFriend.SetActive(true);
             gameObject.SetActive(false);
-            freindPrefab.gameObject.transform.SetParent(Parent);
+            newFriend.gameObject.transform.SetParent(other.transform);
             GameManager.Instance.freinds.Push(freindPrefab.transform);
+
+            newFriend.gameObject.tag = "Friend";
 
             //// transform.localPosition = player.position;
             //print("collied");

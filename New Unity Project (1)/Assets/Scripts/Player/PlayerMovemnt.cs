@@ -3,23 +3,28 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerMovemnt : MonoBehaviour
+public class PlayerMovemnt : MonoBehaviour,IDamagable
 {
     [SerializeField] private float speed = 9;
 
     private float minXRange = -7.50f;
     private float maxXRange = 7.50f;
 
-   public enum MovementType
-    {
-        Normal,
-        OnFinishPoint
-    }
-    public MovementType movementType = MovementType.Normal;
+    [SerializeField] float health;
+
+    public static event System.Action OnPlayerDestroyedEvent;
+
+
+    //public GameManager.MovementType movementType;
     void Start()
     {
-        
+        //FinishPoint.InformEnemyBigGuy += FinishPoint_InformEnemyBigGuy;
     }
+
+    //private void FinishPoint_InformEnemyBigGuy()
+    //{
+    //   movementType = MovementType.Punch;
+    //}
 
     // Update is called once per frame
     void Update()
@@ -29,7 +34,7 @@ public class PlayerMovemnt : MonoBehaviour
 
     private void HandleMovemnt()
     {
-        if(movementType == MovementType.Normal)
+        if(GameManager.Instance.GetMovementType == GameManager.MovementType.Normal)
         {
             if (Input.GetMouseButton(0))
             {
@@ -50,12 +55,22 @@ public class PlayerMovemnt : MonoBehaviour
 
             ConstraintPlayerXposition();
         }
-        if(movementType == MovementType.OnFinishPoint)
+        if (GameManager.Instance.GetMovementType == GameManager.MovementType.OnFinishPoint)
         {
-           
+
             transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z);
         }
-       
+        //if (GameManager.Instance.GetMovementType == GameManager.MovementType.Punch && GameManager.Instance.isPunchingTime)
+        //{
+        //    float rotation = Input.GetAxis("Horizontal");
+        //    transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z);
+
+        //    rotation *= 10 * Time.deltaTime;
+        //    //transform.Rotate(0, rotation, 0);
+           
+            
+        //}
+
     }
 
     private void ConstraintPlayerXposition()
@@ -69,4 +84,16 @@ public class PlayerMovemnt : MonoBehaviour
             transform.position = new Vector3(maxXRange, transform.position.y, transform.position.z);
         }
     }
+
+    public void TakeDame(float damage)
+    {
+        health -= damage;
+        if (health <= 0)
+        {
+            OnPlayerDestroyedEvent?.Invoke();
+            Destroy(gameObject, 1);
+        }
+    }
+
+   
 }

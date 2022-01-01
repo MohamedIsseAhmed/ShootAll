@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-public class Crate : MonoBehaviour
+public class Crate : MonoBehaviour, IDamagable
 {
     [SerializeField] TextMeshPro m_Text;
     [SerializeField] float crateHealthPoints;
@@ -12,9 +12,10 @@ public class Crate : MonoBehaviour
         m_Text.text = crateHealthPoints.ToString();
     }
 
-    public void TakeHit(float hitAmount)
+  
+    public void TakeDame(float damage)
     {
-        crateHealthPoints -= hitAmount;
+        crateHealthPoints -= damage;
         m_Text.text = crateHealthPoints.ToString();
         if (crateHealthPoints < 0)
         {

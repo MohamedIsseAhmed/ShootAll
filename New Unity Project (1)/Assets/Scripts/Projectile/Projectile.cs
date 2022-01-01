@@ -20,7 +20,7 @@ public class Projectile : MonoBehaviour
         
         if (other.CompareTag("Enemy"))
         {
-            print("Hit enemy");
+           
             IDamagable damagable = other.gameObject.GetComponent<IDamagable>();
             if (damagable != null)
             {
@@ -30,10 +30,10 @@ public class Projectile : MonoBehaviour
         if (other.CompareTag("crate"))
         {
            
-            Crate crate = other.gameObject.GetComponent<Crate>();
+            IDamagable crate = other.gameObject.GetComponent<IDamagable>();
             if(crate != null)
             {
-                crate.TakeHit(10);
+                crate.TakeDame(10);
             }
         }
     }
