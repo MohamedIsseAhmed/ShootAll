@@ -16,6 +16,7 @@ public class Shoot : MonoBehaviour,IAim
 
     [SerializeField] float distance=2;
     [SerializeField] Vector3 offset;
+    [SerializeField] AudioClip[] enemyHitSounds;
     Transform meatingPoint;
     EnemyBigGuy targetEnemy;
     private float timeBetweenShoots = 0.1f;
@@ -25,18 +26,34 @@ public class Shoot : MonoBehaviour,IAim
 
     private PlayerMovemnt player;
     private Coroutine coroutine;
+    public static Shoot Instance;
+    public  Shoot ShootInstance;
     void Awake()
     {
+    }
+    private void OnEnable()
+    {
+        if(Instance == null)
+        {
+            Instance = this;
+        }
+        
+      
         player = GetComponentInParent<PlayerMovemnt>();
         FinishPoint.OnFinsihPointEvent += FinishPoint_OnFinsihPointEvent;
+        HealthBar.OnBigGuyDestroyed += FinishPoint_OnFinsihPointEvent;
         meatingPoint = GameObject.Find("MeatingPoint").transform;
         targetEnemy = GameObject.Find("EnemyBigGuy").GetComponent<EnemyBigGuy>();
     }
-
     private void FinishPoint_OnFinsihPointEvent()
     {
+      
         isGameOver = true;
-        StartCoroutine(TurnProcessCompletor());
+        if (gameObject != null)
+        {
+            StartCoroutine(TurnProcessCompletor());
+        }
+     
     }
     IEnumerator Turn()
     {
@@ -72,27 +89,36 @@ public class Shoot : MonoBehaviour,IAim
         }
         if ( LevelController.instance.LevelTypes== LevelController.LevelType.Punching && GameManager.Instance.isPunchingTime)
         {
-         
+           
             isGameOver = true;
             if (Input.GetMouseButtonDown(0))
             {
                 animator.SetFloat("Speed", 3);
+               
                 animator.SetTrigger("Punch");
             }
                 
             if (Input.GetMouseButtonUp(0))
             {
                 animator.SetFloat("Speed", 1);
+               
             }
             Aim(meatingPoint, targetEnemy.transform);
         }
     }
 
-   
+  
     public void ReduceHealth()
     {
+        if (gameObject != null)
+        {
+            targetEnemy.ReduceHealthValue();
+            int randomSound = UnityEngine.Random.Range(0, enemyHitSounds.Length - 1);
+            AudioClip hitSound = enemyHitSounds[randomSound];
+            SoundManager.Instance.PlaySound(hitSound);
+        }
       
-        targetEnemy.ReduceHealthValue();
+
     }
     IEnumerator ShootEnemy()
     {
@@ -117,9 +143,19 @@ public class Shoot : MonoBehaviour,IAim
         yield return new WaitForSeconds(timeAfterToActivatePooledObjects);
         projectile.gameObject.SetActive(false);
     }
+
+    void OnDisable()
+    { 
+         FinishPoint.OnFinsihPointEvent -= FinishPoint_OnFinsihPointEvent;
+        HealthBar.OnBigGuyDestroyed -= FinishPoint_OnFinsihPointEvent;
+        Debug.Log("PrintOnDisable: script was disabled");
+    }
     private void OnDestroy()
     {
-        FinishPoint.OnFinsihPointEvent -= FinishPoint_OnFinsihPointEvent;
+        
+        print("destroying shoot object");
+        //FinishPoint.OnFinsihPointEvent -= FinishPoint_OnFinsihPointEvent;
+        //HealthBar.OnBigGuyDestroyed -= FinishPoint_OnFinsihPointEvent;
     }
 
     public void Aim(Transform target, Transform _directionToLook)

@@ -5,7 +5,7 @@ using UnityEngine;
 public class FinishPoint : MonoBehaviour
 {
     public static event System.Action OnFinsihPointEvent;
-    public static event System.Action OnleyelTypePunching;
+    public static event System.Action OnlevelTypePunching;
     public static event System.Action InformEnemyBigGuy;
     void Start()
     {

@@ -265,6 +265,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   healthBarSprite: {fileID: 684601291}
+  enemyHitSound: {fileID: 8300000, guid: 26ce793183500b049adbcc70f3bc5975, type: 3}
 --- !u!1 &39308730176937319
 GameObject:
   m_ObjectHideFlags: 0

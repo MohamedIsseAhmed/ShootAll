@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class HealthBar : MonoBehaviour
 {
     [SerializeField] Image healthBarSprite;
+    [SerializeField] AudioClip enemyHitSound;
     public static event System.Action OnBigGuyDestroyed;
     private Camera camera;
     private void Start()
@@ -17,10 +18,13 @@ public class HealthBar : MonoBehaviour
         print("FillA");
         healthBarSprite.fillAmount = maxHealth/ currentHealth;
         print(healthBarSprite.fillAmount.ToString("0.00"));
+       
         if (healthBarSprite.fillAmount == 0)
         {
+            SoundManager.Instance.StopPlayingSound();
             OnBigGuyDestroyed?.Invoke();
         }
+       
     }
 
     private void Update()

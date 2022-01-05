@@ -30,10 +30,11 @@ public class GameManager : MonoBehaviour
     {
        movementType = MovementType.Punch;
     }
-
+    
     private void FinishPoint_InformEnemyBigGuy()
     {
         isPunchingTime = true;
         movementType = MovementType.OnFinishPoint;
     }
+    
 }

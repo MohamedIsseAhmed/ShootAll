@@ -13,9 +13,17 @@ public class CameraFollow : MonoBehaviour
     {
         FinishPoint.OnFinsihPointEvent += FinishPoint_OnFinsihPointEvent;
         FinishPoint.InformEnemyBigGuy += FinishPoint_OnFinsihPointEvent;
+        HealthBar.OnBigGuyDestroyed += HealthBar_OnBigGuyDestroyed;
     }
 
-   
+    private void HealthBar_OnBigGuyDestroyed()
+    {
+        
+        offset.x = -0.209999993f;
+        offset.y = 2.20000005f;
+        offset.z = 4.0999999f;
+        distanceModifier = -21;
+    }
 
     private void FinishPoint_OnFinsihPointEvent()
     {

@@ -6,7 +6,7 @@ using UnityEngine.AI;
 public class EnemyBigGuy : MonoBehaviour,IAim
 {
     NavMeshAgent agent;
-   [SerializeField] Animator animator;
+    Animator animator;
     public static EnemyBigGuy Instance;
     [SerializeField] SkinnedMeshRenderer skinnedMesh;
     private bool fightWithPlayer;
@@ -25,13 +25,19 @@ public class EnemyBigGuy : MonoBehaviour,IAim
    [SerializeField] HealthBar healthBar;
     void Awake()
     {
-        Instance = this;
-        
+      
+    }
+    private void OnEnable()
+    {
+           animator=transform.GetChild(1).GetComponent<Animator>();
+           Instance = this;
+
         //agent = GetComponent<NavMeshAgent>();
         //FinishPoint.InformEnemyBigGuy += FinishPoint_InformEnemyBigGuy; 
         skinnedMesh.enabled = false;
+        FinishPoint.InformEnemyBigGuy += FinishPoint_InformEnemyBigGuy;
+        HealthBar.OnBigGuyDestroyed += HealthBar_OnBigGuyDestroyed;
     }
-
     private void FinishPoint_InformEnemyBigGuy()
     {
         skinnedMesh.enabled=true;
@@ -45,11 +51,12 @@ public class EnemyBigGuy : MonoBehaviour,IAim
     {
         //maxHealth = enemyData.maxHealth;
         //currentHealth = enemyData.minHealth;
-        HealthBar.OnBigGuyDestroyed += HealthBar_OnBigGuyDestroyed;
+     
     }
-
+   
     private void HealthBar_OnBigGuyDestroyed()
     {
+        
         animator.SetTrigger("Death");
     }
 
@@ -62,13 +69,11 @@ public class EnemyBigGuy : MonoBehaviour,IAim
         }
     }
   
-    private void OnEnable()
-    {
-        FinishPoint.InformEnemyBigGuy += FinishPoint_InformEnemyBigGuy;
-    }
+   
     private void OnDisable()
     {
         FinishPoint.InformEnemyBigGuy -= FinishPoint_InformEnemyBigGuy;
+        HealthBar.OnBigGuyDestroyed -= HealthBar_OnBigGuyDestroyed;
     }
     public void ReduceHealthValue()
     {

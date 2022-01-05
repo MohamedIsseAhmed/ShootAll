@@ -15,6 +15,8 @@ public class EnemyAI : MonoBehaviour
       
     }
 
+    
+
     public void OnEnemyDestroyed()
     {
         animator.SetTrigger("Death");

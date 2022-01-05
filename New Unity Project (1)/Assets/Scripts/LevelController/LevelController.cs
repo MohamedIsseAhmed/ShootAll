@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+
 public class LevelController : MonoBehaviour
 {
     
@@ -18,9 +19,15 @@ public class LevelController : MonoBehaviour
     private void Awake()
     {
         instance = this;
-       //PlayerPrefs.SetInt("Level", 0);
+      // PlayerPrefs.SetInt("Level", 0);
         currentLevel = PlayerPrefs.GetInt("Level", 0);
-        FinishPoint.OnleyelTypePunching += FinishPoint_OnleyelTypePunching;
+        FinishPoint.OnlevelTypePunching += FinishPoint_OnleyelTypePunching;
+        HealthBar.OnBigGuyDestroyed += HealthBar_OnBigGuyDestroyed;
+    }
+
+    private void HealthBar_OnBigGuyDestroyed()
+    {
+       levelType = LevelType.collision;
     }
 
     private void FinishPoint_OnleyelTypePunching()
@@ -33,14 +40,25 @@ public class LevelController : MonoBehaviour
     {
         levelType = LevelType.collision;
 
-        if (PlayerPrefs.GetInt("Level") == 1)
-        {
-            levelType=LevelType.Punching;
-            print("Punching scene");
-        }
         if (PlayerPrefs.GetInt("Level") == 0)
         {
             levelType = LevelType.collision;
+            print("collision scene");
+        }
+
+        if (PlayerPrefs.GetInt("Level") == 1)
+        {
+            levelType = LevelType.Punching;
+            print("Punching scene");
+        }
+        if (PlayerPrefs.GetInt("Level") == 2)
+        {
+            levelType = LevelType.Punching;
+            print("Punching scene");
+        }
+         if (PlayerPrefs.GetInt("Level") == 3)
+        {
+            levelType = LevelType.Punching;
             print("Punching scene");
         }
     }
@@ -55,12 +73,19 @@ public class LevelController : MonoBehaviour
     public void IncreaseLevel()
     {
         
-        int level = PlayerPrefs.GetInt("Level")+1;
+
+        int level = PlayerPrefs.GetInt("Level") + 1;
+
         PlayerPrefs.SetInt("Level", level);
+        int index = SceneManager.GetActiveScene().buildIndex;
+      
         SceneManager.LoadScene(level);
+        DontDestroyOnLoad(FindObjectOfType<Shoot>().gameObject);
     }
+   
     private void OnDestroy()
     {
-        FinishPoint.OnleyelTypePunching -= FinishPoint_OnleyelTypePunching;
+        print("destroying LEVEL");
+        FinishPoint.OnlevelTypePunching -= FinishPoint_OnleyelTypePunching;
     }
 }

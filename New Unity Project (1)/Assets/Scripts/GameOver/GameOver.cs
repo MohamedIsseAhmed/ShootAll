@@ -7,14 +7,20 @@ using UnityEngine.SceneManagement;
 public class GameOver : MonoBehaviour
 {
     [SerializeField] GameObject gameOver;
+    [SerializeField] GameObject flag;
     [SerializeField] TextMeshProUGUI dimonCount;
 
     [SerializeField] GameObject fail;
-   
-    void Awake()
+    public static GameOver Instance;
+    void OnEnable()
     {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
         FinishPoint.OnFinsihPointEvent += FinishPoint_OnFinsihPointEvent;
         PlayerMovemnt.OnPlayerDestroyedEvent += PlayerMovemnt_OnPlayerDestroyedEvent;
+        HealthBar.OnBigGuyDestroyed += FinishPoint_OnFinsihPointEvent;
     }
 
     private void PlayerMovemnt_OnPlayerDestroyedEvent()
@@ -25,10 +31,21 @@ public class GameOver : MonoBehaviour
 
     private void FinishPoint_OnFinsihPointEvent()
     {
-        gameOver.SetActive(true);
-        dimonCount.text =" Dimonds " +FindObjectOfType<ScoreManager>().DimondCount.ToString();
+        if (PlayerPrefs.GetInt("Level") >= 3)
+        {
+            flag.gameObject.SetActive(true);
+        }
+      
+        if (gameObject!=null)
+           StartCoroutine(GameOverCoroutine());
     }
+    IEnumerator GameOverCoroutine()
+    {
+        yield return null;
 
+        gameOver.SetActive(true);
+        dimonCount.text = " Dimonds " + FindObjectOfType<ScoreManager>().DimondCount.ToString();
+    }
     // Update is called once per frame
     void Update()
     {
@@ -38,6 +55,11 @@ public class GameOver : MonoBehaviour
     {
         FinishPoint.OnFinsihPointEvent -= FinishPoint_OnFinsihPointEvent;
         PlayerMovemnt.OnPlayerDestroyedEvent -= PlayerMovemnt_OnPlayerDestroyedEvent;
+        HealthBar.OnBigGuyDestroyed -= FinishPoint_OnFinsihPointEvent;
     }
- 
+  
+    private void OnDestroy()
+    {
+        print("Destroying Game Over");
+    }
 }

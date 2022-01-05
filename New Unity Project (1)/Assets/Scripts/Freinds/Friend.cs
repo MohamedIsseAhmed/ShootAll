@@ -8,7 +8,7 @@ public class Friend : MonoBehaviour,IAim
     [SerializeField] private GameObject hand;
     [SerializeField] private GameObject weapon;
    [SerializeField] private Animator animator;
-    [SerializeField] AudioClip collisionSound;
+    
     [SerializeField] Transform targetTo;
     GameObject[] meatingPoint;
     [SerializeField] Vector3 offset;
@@ -33,9 +33,11 @@ public class Friend : MonoBehaviour,IAim
         if(player != null)
              bodyColor.material.color = FindObjectOfType<RandomColorGenerator>().GetBodyColor;
 
-        
+        HealthBar.OnBigGuyDestroyed += FinishPointOn;
     }
+
   
+
     private void FinishPointOn()
     {
        
@@ -44,7 +46,7 @@ public class Friend : MonoBehaviour,IAim
            
             transform.parent = null;
             transform.eulerAngles = new Vector3(0, 180, 0);
-            transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z);
+            transform.position = new Vector3(transform.position.x, -0.12F, transform.position.z);
             animator.SetTrigger("Dance");
 
         }
@@ -102,29 +104,37 @@ public class Friend : MonoBehaviour,IAim
     
     private void OnTriggerEnter(Collider target)
     {
-        if (target.CompareTag("Enemy"))
+        if (target.CompareTag("Enemy") || target.CompareTag("crate"))
         {
-            if (levelType == LevelController.LevelType.collision)
+            Destroy(gameObject, 1);
+            if (levelType == LevelController.LevelType.collision )
             {
                 OnEnemyDestroyed?.Invoke();
                 animator.SetTrigger("Death");
-                target.GetComponent<EnemyAI>().OnEnemyDestroyed();
-                //transform.position=new Vector3(transform.position.x, -0.57f,transform.position.z);
-                //transform.rotation = Quaternion.Euler(5.13f, transform.rotation.y, transform.rotation.z);
-            
-                SoundManager.Instance.PlaySound(collisionSound);
-               Destroy(gameObject,4);
-            }
-           else  if (levelType == LevelController.LevelType.Punching)
-            {
-                OnEnemyDestroyed?.Invoke();
-                animator.SetTrigger("Death");
-                target.GetComponent<EnemyAI>().OnEnemyDestroyed();
+                if (target.GetComponent<EnemyAI>())
+                {
+                    target.GetComponent<EnemyAI>().OnEnemyDestroyed();
+                }
+
                 //transform.position=new Vector3(transform.position.x, -0.57f,transform.position.z);
                 //transform.rotation = Quaternion.Euler(5.13f, transform.rotation.y, transform.rotation.z);
 
-                SoundManager.Instance.PlaySound(collisionSound);
-                Destroy(gameObject, 4);
+                SoundManager.Instance.PlayCollisionSound();
+             
+            }
+            else if (levelType == LevelController.LevelType.Punching)
+            {
+                OnEnemyDestroyed?.Invoke();
+                animator.SetTrigger("Death");
+                if (target.GetComponent<EnemyAI>())
+                {
+                    target.GetComponent<EnemyAI>().OnEnemyDestroyed();
+                }
+                //transform.position=new Vector3(transform.position.x, -0.57f,transform.position.z);
+                //transform.rotation = Quaternion.Euler(5.13f, transform.rotation.y, transform.rotation.z);
+
+                SoundManager.Instance.PlayCollisionSound();
+                
             }
         }
         
@@ -136,6 +146,7 @@ public class Friend : MonoBehaviour,IAim
     private void OnDestroy()
     {
         FinishPoint.OnFinsihPointEvent -= FinishPointOn;
+        HealthBar.OnBigGuyDestroyed -= FinishPointOn;
     }
 
     public void Aim(Transform target, Transform _directionToLook)
